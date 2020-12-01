@@ -120,10 +120,22 @@ namespace ConectatonGrupoSYM
 
         public string UrlConsultaPaciente { get; set; } = "http://hapi.gointerop.com/hapi-fhir-server-connectathon/fhir/Patient";
 
+        void Log(string log)
+		{
+            File.AppendAllLines(@"C:\TEMP\Conectatona\log.txt", new string[] { log });
+		}
+
+        void LogText(string log)
+		{
+            File.AppendAllText(@"C:\TEMP\Conectatona\log.txt", log);
+        }
+
         public string FindPatient(string cpf)
         {
             try
             {
+                Log("==============================  Executando Pesquisa por CPF  ==============================\n");
+
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
                 ServicePointManager.Expect100Continue = true;
                 ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) =>
@@ -134,6 +146,8 @@ namespace ConectatonGrupoSYM
                 var urlParam = $"identifier={RndsNameSystem.BRCpfPaciente}|{cpf}";
                 var http = (HttpWebRequest)WebRequest.Create($"{UrlConsultaPaciente}?{urlParam}");
 
+                Log($"Url da consulta: {http.Address}");
+
                 http.KeepAlive = true;
                 http.Accept = "*.*";
                 http.Method = "GET";
@@ -142,9 +156,21 @@ namespace ConectatonGrupoSYM
 
                 using (var resp = http.GetResponse())
                 {
+                    Log($"Código da resposta HTTP: {((HttpWebResponse)resp).StatusCode}");
+
+					foreach (var h in ((HttpWebResponse)resp).Headers)
+					{
+                        var hv = ((HttpWebResponse)resp).GetResponseHeader(h.ToString());
+                        Log($"{h}: {hv}");
+                    }
+
                     using (var sr = new StreamReader(resp.GetResponseStream()))
                     {
                         respContent = sr.ReadToEnd();
+
+                        Log($"Bundle recebido:");
+                        LogText(respContent);
+
                         return ParsePatient(respContent);
                     }
                 }
@@ -157,9 +183,71 @@ namespace ConectatonGrupoSYM
             {
                 return null;
             }
+            finally
+			{
+                Log("\n==============================  Fim da Pesquisa por CPF  ==============================\n\n\n");
+            }
         }
 
-        public string UrlEnvioBundle { get; set; }
+        public string FindPatientExtendido()
+        {
+            try
+            {
+                Log("==============================  Executando Pesquisa Extendida  ==============================\n");
+
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+                ServicePointManager.Expect100Continue = true;
+                ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) =>
+                {
+                    return true;
+                };
+
+                var http = (HttpWebRequest)WebRequest.Create($"http://hapi.gointerop.com/hapi-fhir-server-connectathon/fhir/Patient?_filter=birthdate%20eq%20%221983-09-26%22%20and%20gender%20eq%20male");
+
+                Log($"Url da consulta: {http.Address}");
+
+                http.KeepAlive = true;
+                http.Accept = "*.*";
+                http.Method = "GET";
+
+                string respContent = "";
+
+                using (var resp = http.GetResponse())
+                {
+                    Log($"Código da resposta HTTP: {((HttpWebResponse)resp).StatusCode}");
+
+                    foreach (var h in ((HttpWebResponse)resp).Headers)
+                    {
+                        var hv = ((HttpWebResponse)resp).GetResponseHeader(h.ToString());
+                        Log($"{h}: {hv}");
+                    }
+
+                    using (var sr = new StreamReader(resp.GetResponseStream()))
+                    {
+                        respContent = sr.ReadToEnd();
+
+                        Log($"Bundle recebido:");
+                        LogText(respContent);
+
+                        return ParsePatient(respContent);
+                    }
+                }
+            }
+            catch (WebException wex)
+            {
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            finally
+            {
+                Log("\n==============================  Fim da Pesquisa por CPF  ==============================\n\n\n");
+            }
+        }
+
+        public string UrlEnvioBundle { get; set; } = "http://hapi.gointerop.com/hapi-fhir-server-connectathon/fhir/Bundle";
 
         public bool EnviaBundle(RndsBundle bundle)
         {
