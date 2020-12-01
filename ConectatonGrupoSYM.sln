@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConectatonGrupoSYM", "ConectatonGrupoSYM\ConectatonGrupoSYM.csproj", "{B18C2B5D-3CA6-4A26-BE2F-7D0046859114}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B18C2B5D-3CA6-4A26-BE2F-7D0046859114}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B18C2B5D-3CA6-4A26-BE2F-7D0046859114}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B18C2B5D-3CA6-4A26-BE2F-7D0046859114}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B18C2B5D-3CA6-4A26-BE2F-7D0046859114}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0AC01DC9-8288-435F-8AE6-345635CDAD28}
+	EndGlobalSection
+EndGlobal
