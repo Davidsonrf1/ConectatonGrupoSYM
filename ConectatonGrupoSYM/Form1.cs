@@ -23,5 +23,16 @@ namespace ConectatonGrupoSYM
 
 			cl.FindPatient("98222935003");
 		}
+
+		private void button2_Click(object sender, EventArgs e)
+		{
+			var bundle = new RndsBundle();
+
+			bundle.BundleId = "123456";
+
+			var cl = new Hl7Client();
+
+			cl.EnviaBundle(bundle);
+		}
 	}
 }
